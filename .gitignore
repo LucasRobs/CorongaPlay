@@ -75,3 +75,9 @@ crashlytics-build.properties
 *.dll
 *.asset
 *.log
+*.meta
+*.h
+*.json
+*.md
+*.asmdef
+*.dll

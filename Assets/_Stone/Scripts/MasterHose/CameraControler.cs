@@ -18,9 +18,18 @@ namespace _Stone.MasterHouse.CameraControl
 
         private void LateUpdate()
         {
-            Vector3 desirePos = target_.position + offser;
-            Vector3 smothPos = Vector3.Lerp(transform.position, desirePos, smother);
-            transform.position = smothPos;
+            if (target_)
+            {
+                Vector3 desirePos = target_.position + offser;
+                Vector3 smothPos = Vector3.Lerp(transform.position, desirePos, smother);
+                transform.position = smothPos;
+
+            }
+            else
+            {
+                target_ = _Stone.MasterHouse.MasterHouse.instance.transform;
+            }
+
 
 
 
