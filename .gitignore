@@ -69,15 +69,10 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 *.meta
-*.prefab
-*.png
 *.asmdef
 *.dll
 *.asset
 *.log
-*.meta
 *.h
 *.json
 *.md
-*.asmdef
-*.dll
