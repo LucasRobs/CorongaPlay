@@ -21,9 +21,10 @@ namespace _Stone.MasterHouse
             {
                 FlyUp();
             }
-            if (rb.gravityScale <= 0)
+            if (rb.gravityScale <= 0.01f)
             {
                 rb.gravityScale += Time.deltaTime;
+
             }
         }
         private void Start()
