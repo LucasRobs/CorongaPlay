@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace _Stone.MasterHouse.CameraControl
+namespace _Stone
 {
     public class CameraControler : MonoBehaviour
     {
@@ -27,7 +27,7 @@ namespace _Stone.MasterHouse.CameraControl
             }
             else
             {
-                target_ = _Stone.MasterHouse.MasterHouse.instance.transform;
+                target_ = _Stone.MasterHouse.instance.transform;
             }
 
 

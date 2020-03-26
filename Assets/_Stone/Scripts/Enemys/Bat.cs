@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
-namespace _Stone.Enemy.Bat
+namespace _Stone.Enemy
 {
     public class Bat : _Stone.Creature.CreatureBase,IBat
     {
@@ -11,23 +12,25 @@ namespace _Stone.Enemy.Bat
         [SerializeField] private List<_Stone.Item.ItemBase> ItemsDrop = new List<Item.ItemBase>();
         [SerializeField] private float DropAmount;
 
-        private Dictionary<string, Spells.spell> AttackSpellsList = new Dictionary<string, Spells.spell>();
-        [SerializeField] private List<Spells.spell> _SpellList_ = new List<Spells.spell>();
+        private Dictionary<string, spell> AttackSpellsList = new Dictionary<string, spell>();
+        [SerializeField] private List<spell> _SpellList_ = new List<spell>();
         private void Start()
         {
             for (int i = 0; i < _SpellList_.Count; i++)
             {
-                AttackSpellsList.Add(_SpellList_[i].AttackName, _SpellList_[i]);
+                AttackSpellsList.Add(_SpellList_[i].Name, _SpellList_[i]);
+                _SpellList_[i].Event = (SpellMethod)_Stone.Loader.EnemyEvents[_SpellList_[i].MethodName].CreateDelegate(typeof(SpellMethod));
 
             }
+
         }
         private void FixedUpdate()
         {
 
           
-            if (Vector3.Distance(transform.position,_Stone.MasterHouse.MasterHouse.instance.transform.position) < 5)
+            if (Vector3.Distance(transform.position,_Stone.MasterHouse.instance.transform.position) < 5)
             {
-                Target = _Stone.MasterHouse.MasterHouse.instance.transform;
+                Target = _Stone.MasterHouse.instance.transform;
     
             }
         
@@ -60,7 +63,7 @@ namespace _Stone.Enemy.Bat
                     {
 
                         transform.Translate(Vector2.left * MoveSpeed * Time.deltaTime);
-                        transform.LookAt(Target);
+                        
 
                     }
                 }

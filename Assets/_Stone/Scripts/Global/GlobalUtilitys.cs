@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace _Stone.Status
+namespace _Stone
 {
     [System.Serializable]
     public struct BasicStatus
@@ -16,15 +16,8 @@ namespace _Stone.Status
 
     }
 }
-namespace _Stone.MasterHouse
-{
-    public interface IMasterHouse
-    {
-         void TakeDamage(int amout);
-        
-    }
-}
-namespace _Stone.GameDataManager
+
+namespace _Stone
 {
     public class DataManager
     {
@@ -49,7 +42,7 @@ namespace _Stone.GameDataManager
         }
     }
 }
-namespace _Stone.Enemy.Bat
+namespace _Stone
 {
     public interface IBat
     {
@@ -58,31 +51,43 @@ namespace _Stone.Enemy.Bat
 
     }
 }
-namespace _Stone.Spells
+namespace _Stone
 {
+    [System.Serializable]
+    public delegate void SpellMethod(DataEvent dataEvent);
+    public enum SpellType
+    {
+        Harm = 0,
+        Benefyc = 1,
+
+
+    }
     [System.Serializable]
     public class spell
     {
-        public string AttackName;
-
+        public string Name;
+        public SpellType type;
         public bool IsCasting;
         public int DamageAmount;
         public string AnimationName;
         public UnityEngine.AudioClip Sound;
-        public float AttackDelay;
-        public void Init(combat.CombatControler controler)
+        public float Colldown;
+        public float Duration;
+        public SpellMethod Event;
+        public string MethodName;
+
+        public void Init(CombatControler controler)
         {
             IsCasting = true;
             controler.StartCoroutine(StartSpell(controler));
         }
-
-        private IEnumerator StartSpell(combat.CombatControler control)
+        private IEnumerator StartSpell(CombatControler control)
         {
             Creature.CreatureBase Caster = control.GetComponent<Creature.CreatureBase>();
-            Creature.CreatureBase Target = Caster.Target.GetComponent<Creature.CreatureBase>();
+            Creature.CreatureBase Target = Caster?.Target.GetComponent<Creature.CreatureBase>();
             if (Sound)
             {
-                Audio.AudioMaster.instace.PlaySound(Sound);
+                AudioMaster.instace.PlaySound(Sound);
             }
             if (Caster.AninControler)
             {
@@ -92,12 +97,93 @@ namespace _Stone.Spells
 
                 }
             }
-            Target.TakeDamage(DamageAmount);
+            switch (type)
+            {
+                case SpellType.Benefyc:
+                    Event?.Invoke(new DataEvent { Caster = Caster,Target = Caster,Spell = this});
 
-            yield return new UnityEngine.WaitForSeconds(AttackDelay);
+                    break;
+                case SpellType.Harm:
+                    Event?.Invoke(new DataEvent { Caster = Caster, Target = Target, Spell = this });
+                    break;
+            }
+            yield return new UnityEngine.WaitForSeconds(Colldown);
 
             IsCasting = false;
 
+        }
+    }
+}
+namespace _Stone
+{
+    public class CombatFunctionAtribute : System.Attribute
+    {
+
+    }
+    public struct DataEvent
+    {
+        public Creature.CreatureBase Caster;
+        public Creature.CreatureBase Target;
+        public spell Spell;
+
+    }
+    public class BallonEvents
+    {
+        [CombatFunctionAtribute]
+        public static void Sprint(DataEvent dataEvent)
+        {
+            dataEvent.Caster.StartCoroutine(SprintEnum(dataEvent));
+        }
+        private static IEnumerator SprintEnum(DataEvent dataEvent)
+        {
+            dataEvent.Caster.MoveSpeed += 3;
+            yield return new UnityEngine.WaitForSeconds(dataEvent.Spell.Duration);
+            dataEvent.Caster.MoveSpeed -= 3;
+        }
+
+    }
+    public class EnemyEvents
+    {
+        [CombatFunctionAtribute]
+        public static void SonicWave(DataEvent dataEvent)
+        {
+            dataEvent.Target.TakeDamage(dataEvent.Spell.DamageAmount);
+        }
+        [CombatFunctionAtribute]
+        public static void BitAttack(DataEvent dataEvent)
+        {
+            dataEvent.Target.TakeDamage(dataEvent.Spell.DamageAmount);
+        }
+    }
+
+    public class Loader
+    {
+        public static System.Collections.Generic.Dictionary<string, System.Reflection.MethodInfo> EnemyEvents = new System.Collections.Generic.Dictionary<string, System.Reflection.MethodInfo>();
+        public static System.Collections.Generic.Dictionary<string, System.Reflection.MethodInfo> BaloonEvents = new System.Collections.Generic.Dictionary<string, System.Reflection.MethodInfo>();
+        public static void Load()
+        {
+            System.Type EnemyC = typeof(EnemyEvents);
+
+            foreach (var method in EnemyC.GetMethods())
+            {
+                if (!EnemyEvents.ContainsKey(method.Name))
+                {
+                    EnemyEvents.Add(method.Name, method);
+
+                }
+            }
+
+            System.Type BalllonC = typeof(BallonEvents);
+
+            foreach (var method in BalllonC.GetMethods())
+            {
+                if (!BaloonEvents.ContainsKey(method.Name))
+                {
+                    BaloonEvents.Add(method.Name, method);
+
+                }
+
+            }
         }
     }
 }

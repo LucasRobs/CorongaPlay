@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-namespace _Stone.Audio
+namespace _Stone
 {
     [RequireComponent(typeof(AudioSource))]
     public class AudioMaster : MonoBehaviour

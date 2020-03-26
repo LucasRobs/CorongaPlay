@@ -1,8 +1,10 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
 namespace _Stone
 {
-    public class Baloon : MonoBehaviour
+    public class GroundCollision : MonoBehaviour
     {
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -10,10 +12,9 @@ namespace _Stone
             MasterHouse house = collision.GetComponent<MasterHouse>();
             if (house)
             {
-                house.AddScore(5);
+                house.TakeDamage(10000);
             }
         }
-
     }
 
 }

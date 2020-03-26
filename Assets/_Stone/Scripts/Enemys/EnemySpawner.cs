@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace _Stone.Enemy.Spawn
+namespace _Stone.Enemy
 {
-    public enum SpawnTýpe
+    public enum SpawnType
     {
         bat = 0,
         mosquito = 1,
@@ -18,8 +18,7 @@ namespace _Stone.Enemy.Spawn
 
         [SerializeField] private GameObject BatPrefab;
         [SerializeField] private float SpawnDelay = 5;
-        [SerializeField] private SpawnTýpe enemyType;
-        [SerializeField] private Vector3 SpawnPosition = Vector2.zero;
+        [SerializeField] private SpawnType enemyType;
 
 
         private void Start()
@@ -32,7 +31,7 @@ namespace _Stone.Enemy.Spawn
         private IEnumerator SpanwWave()
         {
             float delay = SpawnDelay;
-            SpawnPosition = transform.position + new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f), UnityEngine.Random.Range(1, -1));
+
             while (true)
             {
       
@@ -40,9 +39,9 @@ namespace _Stone.Enemy.Spawn
                 {
                     switch (enemyType)
                     {
-                        case SpawnTýpe.bat:
+                        case SpawnType.bat:
 
-                            GameObject batP = Instantiate(BatPrefab);
+                            GameObject batP = Instantiate(BatPrefab,transform);
                             if (!batP.GetComponent<Rigidbody2D>())
                             {
                                 batP.AddComponent<Rigidbody2D>();
@@ -55,7 +54,7 @@ namespace _Stone.Enemy.Spawn
                                 batP.AddComponent<BoxCollider2D>();
 
                             }
-                            batP.transform.position = SpawnPosition;
+                            batP.transform.position = _Stone.MasterHouse.instance.transform.position + new Vector3(UnityEngine.Random.Range(12, 8), UnityEngine.Random.Range(1, -1));
 
                             break;
                     }

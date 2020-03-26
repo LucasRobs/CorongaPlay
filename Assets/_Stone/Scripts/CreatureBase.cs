@@ -9,13 +9,13 @@ namespace _Stone.Creature
     {
         void TakeDamage(int amout);
     }
-    [RequireComponent(typeof(combat.CombatControler))]
+    [RequireComponent(typeof(CombatControler))]
     public class CreatureBase : MonoBehaviour,ICreature
     {
-        [SerializeField] private _Stone.Status.BasicStatus status;
+        [SerializeField] private _Stone.BasicStatus status;
         public Transform Target;
         public Animator AninControler;
-        public combat.CombatControler CombatMaster => GetComponent<combat.CombatControler>();
+        public CombatControler CombatMaster => GetComponent<CombatControler>();
         public float MoveSpeed = 3;
         public void TakeDamage(int amout)
         {
